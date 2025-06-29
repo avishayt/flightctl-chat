@@ -1,5 +1,5 @@
 # vim: set filetype=dockerfile
-FROM localhost/local-ai-chat-lightspeed-stack:latest
+FROM localhost/local-fc-chat-lightspeed-stack:latest
 
 USER root
 

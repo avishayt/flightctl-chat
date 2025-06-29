@@ -1,7 +1,7 @@
-[submodule "assisted-service-mcp"]
-	path = assisted-service-mcp
-	url = https://github.com/openshift-assisted/assisted-service-mcp
-	branch = master
+[submodule "flightctl-mcp"]
+	path = flightctl-mcp
+	url = https://github.com/flightctl/flightctl-mcp.git
+	branch = main
 [submodule "lightspeed-stack"]
 	path = lightspeed-stack
 	url = https://github.com/omertuc/lightspeed-stack
@@ -10,9 +10,10 @@
 	path = inspector
 	url = https://github.com/omertuc/inspector
 	branch = imager
-[submodule "assisted-installer-ui"]
-	path = assisted-installer-ui
-	url = https://github.com/openshift-assisted/assisted-installer-ui
+[submodule "flightctl-ui"]
+	path = flightctl-ui
+	url = https://github.com/flightctl/flightctl-ui.git
+	branch = main
 [submodule "llama-stack"]
 	path = llama-stack
 	url = https://github.com/meta-llama/llama-stack

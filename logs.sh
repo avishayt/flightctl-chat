@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -euo pipefail
+set -e
 
-podman pod logs assisted-chat-pod --follow --names --since 0
+podman pod logs flightctl-chat-pod --follow --names --since 0

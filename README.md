@@ -1,14 +1,14 @@
-# Assisted Chat
+# Flight Control Chat
 
 This repo builds the images for and runs in a podman pod the following services:
-- [x] assisted-service-mcp
+- [x] flightctl-mcp
 - [x] lightspeed-core + llama-stack (Same container, built separately)
-- [x] assisted UI
+- [x] [Flight Control UI](https://github.com/flightctl/flightctl-ui) - Official Flight Control web interface
 - [x] inspector
 
 # Pre-requisites
 
-- OCM offline token (you will be prompted with instructions)
+- Flight Control credentials (you will be prompted with instructions)
 - Gemini API key (you will be prompted with instructions)
 
 ## Dependencies
@@ -41,8 +41,15 @@ git submodule update
 
 `./rm.sh` - Removes the podman pod
 
+# Access Points
+
+- **Flight Control UI**: http://localhost:8080 - Official Flight Control web interface
+- **Lightspeed Chat API**: http://localhost:8090 - Chat completion API endpoint
+- **MCP Inspector**: http://localhost:6274 - MCP protocol inspector
+
 # TODO
 
 - [x] Add llama-stack support
+- [x] Add official Flight Control UI
 - [ ] Automatically connect Inspector to the MCP
 

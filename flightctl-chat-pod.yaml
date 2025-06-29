@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: flightctl-chat-pod
+spec:
+  containers:
+    - name: lightspeed-stack
+      image: localhost/local-fc-chat-lightspeed-stack-plus-llama-stack
+      env:
+        - name: GEMINI_API_KEY
+          value: ${GEMINI_API_KEY}
+      ports:
+        - containerPort: 8090
+        - hostPort: 8090
+      volumeMounts:
+        - mountPath: /app-root/lightspeed-stack.yaml
+          name: config
+          subPath: lightspeed-stack.yaml
+        - mountPath: /app-root/llama_stack_client_config.yaml
+          name: config
+          subPath: llama_stack_client_config.yaml
+    - name: flightctl-mcp
+      image: localhost/local-fc-chat-flightctl-mcp:latest
+      env:
+        - name: MCP_TRANSPORT
+          value: stdio
+        - name: API_BASE_URL
+          value: ${API_BASE_URL}
+        - name: OIDC_TOKEN_URL
+          value: ${OIDC_TOKEN_URL}
+        - name: OIDC_CLIENT_ID
+          value: ${OIDC_CLIENT_ID}
+        - name: REFRESH_TOKEN
+          value: ${REFRESH_TOKEN}
+        - name: LOG_LEVEL
+          value: INFO
+    - name: ui
+      image: localhost/local-fc-chat-ui:latest
+      env:
+        - name: FLIGHTCTL_SERVER
+          value: ${API_BASE_URL}
+        - name: FLIGHTCTL_SERVER_INSECURE_SKIP_VERIFY
+          value: "true"
+        - name: AUTH_INSECURE_SKIP_VERIFY
+          value: "true"
+      ports:
+        - containerPort: 8080
+        - hostPort: 8080
+    - name: mcp-inspector
+      image: localhost/local-fc-chat-inspector:latest
+      ports:
+        - containerPort: 6274
+        - hostPort: 6274
+  volumes:
+    - name: config
+      hostPath:
+        path: ./config
+        type: Directory

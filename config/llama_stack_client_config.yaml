@@ -1,87 +1,104 @@
-version: 2
-image_name: starter
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the terms described in the LICENSE file in
+# the root directory of this source tree.
+
+image:
+  # When setting a custom image, you'll want to make sure the image contains
+  # a conda environment called llama-stack with dependencies pre-installed
+  image_name: localhost/llama-stack-local
+  docker_image: localhost/llama-stack:latest
+
+conda_env: llama-stack
+port: 5001
+
 apis:
-- agents
-- datasetio
-- eval
-- files
-- inference
-- safety
-- scoring
-- telemetry
-- tool_runtime
-- vector_io
-providers:
-  inference:
-  - provider_id: gemini
-    provider_type: remote::gemini
-    config:
-      api_key: ${env.GEMINI_API_KEY:+}
-  vector_io: []
-  files: []
-  safety: []
-  agents:
-  - provider_id: meta-reference
-    provider_type: inline::meta-reference
-    config:
-      persistence_store:
-        type: sqlite
-        namespace: null
-        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/agents_store.db
-      responses_store:
-        type: sqlite
-        db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/responses_store.db
-  telemetry:
-  - provider_id: meta-reference
-    provider_type: inline::meta-reference
-    config:
-      service_name: "${env.OTEL_SERVICE_NAME:=\u200B}"
-      sinks: ${env.TELEMETRY_SINKS:=console,sqlite}
-      sqlite_db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/trace_store.db
-  eval: []
-  datasetio: []
-  scoring:
-  - provider_id: basic
-    provider_type: inline::basic
-    config: {}
-  - provider_id: llm-as-judge
-    provider_type: inline::llm-as-judge
-    config: {}
-  tool_runtime:
-  - provider_id: rag-runtime
-    provider_type: inline::rag-runtime
-    config: {}
-  - provider_id: model-context-protocol
-    provider_type: remote::model-context-protocol
-    config: {}
-metadata_store:
-  type: sqlite
-  db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/registry.db
-inference_store:
-  type: sqlite
-  db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/inference_store.db
+  - inference
+  - memory
+  - agents
+  - safety
+  - telemetry
+  - inspect
+  - post_training
+  - synthetic_data_generation
+  - eval
+  - reward_scoring
+  - datasetio
+  - scoring
+
 models:
-- metadata: {}
-  model_id: gemini/gemini-2.5-pro
-  provider_id: gemini
-  provider_model_id: gemini/gemini-2.5-pro
-  model_type: llm
-- metadata: {}
-  model_id: gemini/gemini-2.5-flash
-  provider_id: gemini
-  provider_model_id: gemini/gemini-2.5-flash
-  model_type: llm
+  - model_id: meta-llama/Llama-3.2-3B-Instruct
+    # You can specify a custom gguf_file to use for the model
+    # gguf_file: ~/.llama/checkpoints/Llama3.2-3B-Instruct/model.gguf
+    provider_model_id: meta-llama/Llama-3.2-3B-Instruct
+    model_type: llm
+    metadata:
+      llama_model_type: llama3_2
+
 shields: []
-vector_dbs: []
-datasets: []
-scoring_fns: []
-benchmarks: []
-tool_groups:
-- toolgroup_id: builtin::rag
-  provider_id: rag-runtime
-- toolgroup_id: mcp::assisted
-  provider_id: model-context-protocol
-  mcp_endpoint:
-    uri: "http://assisted-service-mcp:8000/sse"
-server:
-  port: 8321
+
+memory_banks: []
+
+# Inference provider configurations
+inference:
+  # Options: vllm, transformers, sglang, mlx, ollama, together, fireworks
+  provider: ollama
+  config:
+    model: llama3.2:3b
+
+safety:
+  # Options: llama_guard
+  provider: meta_reference
+  config:
+    llama_guard_shield:
+      model_id: meta-llama/Llama-Guard-3-1B
+      excluded_categories: []
+      disable_input_check: false
+      disable_output_check: false
+
+telemetry:
+  provider: meta_reference
+  config:
+    # Settings for builtin telemetry provider
+    enable_console: true
+    enable_file: false
+
+agents:
+  provider: meta_reference
+  config:
+    # Persistence can be in-memory or db (with sqlite)
+    persistence_store:
+      provider_type: memory
+      config: {}
+
+post_training:
+  provider: meta_reference
+  config: {}
+
+synthetic_data_generation:
+  provider: meta_reference
+  config: {}
+
+reward_scoring:
+  provider: meta_reference
+  config: {}
+
+datasetio:
+  provider: meta_reference
+  config: {}
+
+eval:
+  provider: meta_reference
+  config: {}
+
+scoring:
+  provider: meta_reference
+  config: {}
+
+toolgroups:
+  - toolgroup_id: mcp::flightctl
+    provider_id: mcp
+    provider_type: remote::mcp
+    config:
+      uri: "http://flightctl-mcp:8000/sse"

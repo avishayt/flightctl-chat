@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -euxo pipefail
+set -e
 
-podman pod rm assisted-chat-pod
+podman pod rm flightctl-chat-pod
