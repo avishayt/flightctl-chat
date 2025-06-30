@@ -19,6 +19,9 @@ spec:
         - mountPath: /app-root/llama_stack_client_config.yaml
           name: config
           subPath: llama_stack_client_config.yaml
+        - mountPath: /app-root/llama_stack_client_config_generated.yaml
+          name: config
+          subPath: llama_stack_client_config_generated.yaml
     - name: flightctl-mcp
       image: localhost/local-fc-chat-flightctl-mcp:latest
       env:

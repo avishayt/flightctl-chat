@@ -1,0 +1,104 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the terms described in the LICENSE file in
+# the root directory of this source tree.
+
+image:
+  # When setting a custom image, you'll want to make sure the image contains
+  # a conda environment called llama-stack with dependencies pre-installed
+  image_name: localhost/llama-stack-local
+  docker_image: localhost/llama-stack:latest
+
+conda_env: llama-stack
+port: 5001
+
+apis:
+  - inference
+  - memory
+  - agents
+  - safety
+  - telemetry
+  - inspect
+  - post_training
+  - synthetic_data_generation
+  - eval
+  - reward_scoring
+  - datasetio
+  - scoring
+
+models:
+  - model_id: meta-llama/Llama-3.2-3B-Instruct
+    # You can specify a custom gguf_file to use for the model
+    # gguf_file: ~/.llama/checkpoints/Llama3.2-3B-Instruct/model.gguf
+    provider_model_id: meta-llama/Llama-3.2-3B-Instruct
+    model_type: llm
+    metadata:
+      llama_model_type: llama3_2
+
+shields: []
+
+memory_banks: []
+
+# Inference provider configurations
+inference:
+  # Options: vllm, transformers, sglang, mlx, ollama, together, fireworks
+  provider: ollama
+  config:
+    model: llama3.2:3b
+
+safety:
+  # Options: llama_guard
+  provider: meta_reference
+  config:
+    llama_guard_shield:
+      model_id: meta-llama/Llama-Guard-3-1B
+      excluded_categories: []
+      disable_input_check: false
+      disable_output_check: false
+
+telemetry:
+  provider: meta_reference
+  config:
+    # Settings for builtin telemetry provider
+    enable_console: true
+    enable_file: false
+
+agents:
+  provider: meta_reference
+  config:
+    # Persistence can be in-memory or db (with sqlite)
+    persistence_store:
+      provider_type: memory
+      config: {}
+
+post_training:
+  provider: meta_reference
+  config: {}
+
+synthetic_data_generation:
+  provider: meta_reference
+  config: {}
+
+reward_scoring:
+  provider: meta_reference
+  config: {}
+
+datasetio:
+  provider: meta_reference
+  config: {}
+
+eval:
+  provider: meta_reference
+  config: {}
+
+scoring:
+  provider: meta_reference
+  config: {}
+
+toolgroups:
+  - toolgroup_id: mcp::flightctl
+    provider_id: mcp
+    provider_type: remote::mcp
+    config:
+      uri: "http://flightctl-mcp:8000/sse"

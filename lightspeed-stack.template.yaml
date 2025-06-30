@@ -1,7 +1,21 @@
 name: flightctl-chat
-# service:
-#   host: 0.0.0.0
-#   port: 8090
+service:
+  host: 0.0.0.0
+  port: 8090
+  auth_enabled: false
+  workers: 1
+  color_log: true
+  access_log: true
+llama_stack:
+  use_as_library_client: false
+  library_client_config_path: null
+  url: http://localhost:5001
+  api_key: null
+user_data_collection:
+  feedback_disabled: false
+  feedback_storage: "/tmp/data/feedback"
+  transcripts_disabled: false
+  transcripts_storage: "/tmp/data/transcripts"
 
 providers:
   - provider_id: gemini
